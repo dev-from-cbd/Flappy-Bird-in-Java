@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.*;
 
-public class FlappyBird extends JPanel {
+public class FlappyBird extends JPanel implements ActionListener {
     int boardWidth = 360;
     int boardHeight = 640;
 
@@ -33,18 +33,27 @@ public class FlappyBird extends JPanel {
 
     //Game Logic
     Bird bird;
+    int velocityY = -9;
+    int gravity = 1;
+
+    Timer gameLoop;
 
     FlappyBird() {
         setPreferredSize(new Dimension(boardWidth, boardHeight));
-        setBackground(Color.BLUE);
+        //setBackground(Color.BLUE);
 
-        //load images
+        //Load Images
         backgroundImg = new ImageIcon(getClass().getResource("./flappybirdbg.png")).getImage();
         birdImg = new ImageIcon(getClass().getResource("./flappybird.png")).getImage();
         topPipeImg = new ImageIcon(getClass().getResource("./toppipe.png")).getImage();
         bottomPipeImg = new ImageIcon(getClass().getResource("./bottompipe.png")).getImage();
 
+        //Bird
         bird = new Bird(birdImg);
+
+        //Game Timer
+        gameLoop = new Timer(1000/60, this);
+        gameLoop.start();
     }
 
     public void paintComponent(Graphics g) {
@@ -53,10 +62,23 @@ public class FlappyBird extends JPanel {
     }
 
     public void draw(Graphics g) {
-        //background
+        //Background
         g.drawImage(backgroundImg, 0, 0, boardWidth, boardHeight, null);
 
-        //bird
+        //Bird
         g.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height, null);
+    }
+
+    public void move() {
+        //Bird
+        velocityY += gravity;
+        bird.y += velocityY;
+        bird.y = Math.max(bird.y, 0);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        move();
+        repaint();
     }
 }
