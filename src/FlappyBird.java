@@ -59,7 +59,7 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
     ArrayList<Pipe> pipes;
 
     Timer gameLoop;
-    Timer placePipesTimer;
+    Timer placePipeTimer;
 
     FlappyBird() {
         setPreferredSize(new Dimension(boardWidth, boardHeight));
@@ -75,9 +75,17 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
 
         //Bird
         bird = new Bird(birdImg);
+        pipes = new ArrayList<Pipe>();
 
-        //Place
-        
+        //Place pipes timer
+        placePipeTimer = new Timer(1500, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+              // Code to be executed
+              placePipes();
+            }
+        });
+        placePipeTimer.start();
 
         //Game Timer
         gameLoop = new Timer(1000/60, this);
@@ -101,6 +109,11 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
 
         //Bird
         g.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height, null);
+
+        //Pipes
+        for (int i = 0; i < pipes.size(); i++){
+            
+        }
     }
 
     public void move() {
