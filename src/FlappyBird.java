@@ -112,7 +112,7 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
 
         //Pipes
         for (int i = 0; i < pipes.size(); i++){
-            
+            Pipe pipe = pipes.get(i);
         }
     }
 
