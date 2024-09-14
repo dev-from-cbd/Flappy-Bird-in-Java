@@ -97,8 +97,12 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
         //(0-1) * pipeHeight/2.
         // 0 -> -128 (pipeHeight/4)
         // 1 -> -128 - 256 (pipeHeight/4 - pipeHeight/2) = -3/4 pipeHeight
+
         int randomPipeY = (int) (pipeY - pipeHeight/4 - Math.random()*(pipeHeight/2));
+        int openingSpace = boardHeight/4;
+
         Pipe topPipe = new Pipe(topPipeImg);
+        topPipe.y = randomPipeY;
         pipes.add(topPipe);
     }
 
@@ -108,7 +112,7 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
     }
 
     public void draw(Graphics g) {
-        System.out.println("Draw");
+        //System.out.println("Draw");
         //Background
         g.drawImage(backgroundImg, 0, 0, boardWidth, boardHeight, null);
 
