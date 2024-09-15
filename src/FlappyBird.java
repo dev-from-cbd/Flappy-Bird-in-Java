@@ -61,6 +61,8 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
 
     Timer gameLoop;
     Timer placePipeTimer;
+    boolean gameOver = false;
+    double score = 0;
 
     FlappyBird() {
         setPreferredSize(new Dimension(boardWidth, boardHeight));
@@ -104,6 +106,10 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
         Pipe topPipe = new Pipe(topPipeImg);
         topPipe.y = randomPipeY;
         pipes.add(topPipe);
+
+        Pipe bottomPipe = new Pipe(bottomPipeImg);
+        bottomPipe.y = topPipe.y + pipeHeight + openingSpace;
+        pipes.add(bottomPipe);
     }
 
     public void paintComponent(Graphics g) {
@@ -124,6 +130,16 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
             Pipe pipe = pipes.get(i);
             g.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height, null);
         }
+
+        //Score 
+        g.setColor(Color.white);
+        g.setFont(new Font("Arial", Font.PLAIN, 32));
+        if (gameOver) {
+            g.drawString("Game over" + String.valueOf((int) score), 10, 35);
+        }
+        else {
+            g.drawString(String.valueOf((int) score), 10, 35);
+        }
     }
 
     public void move() {
@@ -136,7 +152,27 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
         for (int i = 0; i < pipes.size(); i++) {
             Pipe pipe = pipes.get(i);
             pipe.x += velocityX;
+
+            if (!pipe.passed && bird.x > pipe.x + pipe.width) {
+                score += 0.5; //0.5 because there are 2 pipes! so 0.5*2 = 1, 1 for each set of pipes
+                pipe.passed = true;
+            }
+
+            if (collision(bird, pipe)) {
+                gameOver = true;
+            }
         }
+
+        if (bird.y > boardHeight) {
+            gameOver = true;
+        }
+    }
+
+    public boolean collision(Bird a, Pipe b) {
+        return a.x < b.x + b.width &&   //a's top left corner doesn't reach b's top right corner
+               a.x + a.width > b.x &&   //a's top right corner passes b's top left corner
+               a.y < b.y + b.height &&  //a's top left corner doesn't reach b's bottom left corner
+               a.y + a.height > b.y;    //a's bottom left corner passes b's top left corner
     }
 
     @Override
@@ -156,7 +192,7 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
             velocityY = -9;
 
             if (gameOver) {
-                //restart game by resetting conditions
+                //Restart the game by resetting conditions
                 bird.y = birdY;
                 velocityY = 0;
                 pipes.clear();
